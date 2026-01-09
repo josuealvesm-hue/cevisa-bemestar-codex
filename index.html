@@ -75,26 +75,18 @@
 
     /* Branding */
     .spa-brand-top {
+      width: 100%;
       display: flex;
       justify-content: center;
-      margin-bottom: 24px;
-    }
-
-    .spa-logo-overlay {
-      padding: 10px 16px;
-      border-radius: 999px;
-    }
-
-    .spa-logo-overlay.is-on-dark {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(6px);
+      padding-top: 20px;
+      padding-bottom: 28px;
     }
 
     .spa-brand-logo {
-      max-width: 220px;
+      max-width: 200px;
       width: 100%;
       height: auto;
-      opacity: 0.95;
+      display: block;
     }
 
     .spa-footer-logo {
@@ -117,7 +109,7 @@
 
     @media (max-width: 640px) {
       .spa-brand-logo {
-        max-width: 180px;
+        max-width: 160px;
       }
       .spa-footer-logo-img {
         max-width: 140px;
@@ -205,25 +197,16 @@
     }
   </script>
 
-  <!-- ============================================
-       HEADER FIXO
-  ============================================ -->
-  <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-stone-100">
-    <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
-      <div class="spa-brand-top mb-0">
-        <div class="spa-logo-overlay">
-          <img
-            src="https://adventisthealth.com.br/wp-content/uploads/2025/03/logo-spa-adv.svg"
-            alt="Spa Médico Adventista Cevisa"
-            class="spa-brand-logo"
-            loading="eager"
-          />
-        </div>
-      </div>
-    </div>
-  </header>
+  <div class="spa-brand-top">
+    <img
+      src="https://adventisthealth.com.br/wp-content/uploads/2025/03/logo-spa-adv.svg"
+      alt="Spa Médico Adventista Cevisa"
+      class="spa-brand-logo"
+      loading="eager"
+    />
+  </div>
 
-  <main class="pt-16 pb-12 px-4">
+  <main class="pb-12 px-4">
     <div class="max-w-xl mx-auto">
       <!-- Stages -->
       <section id="stage-intro" class="pt-8"></section>
