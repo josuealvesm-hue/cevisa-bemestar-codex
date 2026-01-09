@@ -167,7 +167,8 @@
           description: "Seus resultados sugerem que você tem conseguido lidar bem com as demandas do dia a dia. Continue cultivando hábitos saudáveis e momentos de autocuidado.",
           gradient: "gradient-secondary",
           bgColor: "bg-secondary-soft",
-          textColor: "text-primary"
+          textColor: "text-secondary",
+          scoreTextColor: "text-blue"
         };
       } else if (score <= 26) {
         return {
@@ -176,16 +177,18 @@
           description: "Seus resultados indicam uma tendência a estresse percebido em nível moderado. Isso é comum e pode ser um bom momento para incorporar práticas de bem-estar à sua rotina.",
           gradient: "gradient-cta",
           bgColor: "bg-cta-soft",
-          textColor: "text-cta"
+          textColor: "text-secondary",
+          scoreTextColor: "text-blue"
         };
-      }
+      } 
       return {
         range: "alto",
         title: "Tendência a estresse percebido mais elevado",
         description: "Seus resultados sugerem uma tendência a níveis mais elevados de estresse percebido. Recomendamos buscar estratégias de cuidado e, se necessário, apoio profissional.",
         gradient: "gradient-primary",
         bgColor: "bg-primary-soft",
-        textColor: "text-primary"
+        textColor: "text-secondary",
+        scoreTextColor: "text-blue"
       };
     }
 
@@ -574,7 +577,11 @@
 
         <div class="rounded-2xl p-6 mb-6 ${interpretation.bgColor} border border-stone-100">
           <div class="text-center mb-4">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br ${interpretation.gradient} text-white text-3xl font-light mb-3">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full
+            bg-gradient-to-br ${interpretation.gradient}
+            ${interpretation.scoreTextColor}
+            text-3xl font-light mb-3">
+
               ${score}
             </div>
             <p class="text-xs text-stone-500 mb-2">de 40 pontos</p>
