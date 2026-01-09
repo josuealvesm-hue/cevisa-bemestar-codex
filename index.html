@@ -73,6 +73,57 @@
 
     .ring-brand:focus { outline: none; box-shadow: 0 0 0 4px rgba(108,211,251,0.35); }
 
+    /* Branding */
+    .spa-brand-top {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .spa-logo-overlay {
+      padding: 10px 16px;
+      border-radius: 999px;
+    }
+
+    .spa-logo-overlay.is-on-dark {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(6px);
+    }
+
+    .spa-brand-logo {
+      max-width: 220px;
+      width: 100%;
+      height: auto;
+      opacity: 0.95;
+    }
+
+    .spa-footer-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .spa-footer-logo-img {
+      max-width: 160px;
+      width: 100%;
+      height: auto;
+      opacity: 0.75;
+    }
+
+    .spa-logo-overlay.footer.is-on-dark {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(4px);
+    }
+
+    @media (max-width: 640px) {
+      .spa-brand-logo {
+        max-width: 180px;
+      }
+      .spa-footer-logo-img {
+        max-width: 140px;
+      }
+    }
+
     /* Pequenos ajustes */
     .btn-disabled { opacity: .5; cursor: not-allowed; }
   </style>
@@ -159,8 +210,16 @@
   ============================================ -->
   <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-stone-100">
     <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
-      <span class="text-primary">🍃</span>
-      <span class="text-sm font-medium text-stone-700">Spa Médico Adventista Cevisa</span>
+      <div class="spa-brand-top mb-0">
+        <div class="spa-logo-overlay">
+          <img
+            src="https://adventisthealth.com.br/wp-content/uploads/2025/03/logo-spa-adv.svg"
+            alt="Spa Médico Adventista Cevisa"
+            class="spa-brand-logo"
+            loading="eager"
+          />
+        </div>
+      </div>
     </div>
   </header>
 
@@ -576,7 +635,18 @@
           </a>
         </div>
 
-        <p class="text-xs text-center text-stone-400 mt-6">
+        <div class="spa-footer-logo mt-6">
+          <div class="spa-logo-overlay footer">
+            <img
+              src="https://adventisthealth.com.br/wp-content/uploads/2025/03/logo-spa-adv.svg"
+              alt="Spa Médico Adventista Cevisa"
+              class="spa-footer-logo-img"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <p class="text-xs text-center text-stone-400">
           © ${year} Spa Médico Adventista Cevisa. Todos os direitos reservados.
         </p>
       `;
