@@ -9,6 +9,70 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
+    :root {
+      --c-primary: #1C549C;
+      --c-secondary: #6CD3FB;
+      --c-accent: #28F5CC;
+      --c-cta: #FF9500;
+
+      /* Tons claros (para backgrounds suaves) */
+      --c-primary-50: rgba(28,84,156,0.08);
+      --c-secondary-50: rgba(108,211,251,0.16);
+      --c-accent-50: rgba(40,245,204,0.16);
+      --c-cta-50: rgba(255,149,0,0.14);
+
+      /* Sombras */
+      --shadow-primary: 0 10px 25px rgba(28,84,156,0.18);
+      --shadow-cta: 0 10px 25px rgba(255,149,0,0.18);
+    }
+
+    .bg-primary { background: var(--c-primary); }
+    .bg-secondary { background: var(--c-secondary); }
+    .bg-accent { background: var(--c-accent); }
+    .bg-cta { background: var(--c-cta); }
+
+    .text-primary { color: var(--c-primary); }
+    .text-secondary { color: #075985; }
+    .text-accent { color: #0f766e; }
+    .text-cta { color: var(--c-cta); }
+
+    .bg-primary-soft { background: var(--c-primary-50); }
+    .bg-secondary-soft { background: var(--c-secondary-50); }
+    .bg-accent-soft { background: var(--c-accent-50); }
+    .bg-cta-soft { background: var(--c-cta-50); }
+
+    .border-primary { border-color: rgba(28,84,156,0.28); }
+    .border-secondary { border-color: rgba(108,211,251,0.35); }
+    .border-accent { border-color: rgba(40,245,204,0.35); }
+    .border-cta { border-color: rgba(255,149,0,0.35); }
+
+    .gradient-primary { background: linear-gradient(135deg, var(--c-primary), var(--c-accent)); }
+    .gradient-secondary { background: linear-gradient(135deg, var(--c-secondary), var(--c-accent)); }
+    .gradient-cta { background: linear-gradient(135deg, var(--c-cta), var(--c-primary)); }
+
+    .shadow-brand { box-shadow: var(--shadow-primary); }
+    .shadow-cta { box-shadow: var(--shadow-cta); }
+
+    .text-on-primary-muted { color: rgba(255, 255, 255, 0.8); }
+
+    .accent-brand { accent-color: var(--c-primary); }
+
+    .btn-brand {
+      background: linear-gradient(90deg, var(--c-primary), var(--c-accent));
+      color: white;
+      box-shadow: var(--shadow-primary);
+    }
+    .btn-brand:hover { filter: brightness(0.95); }
+
+    .btn-cta {
+      background: linear-gradient(90deg, var(--c-cta), var(--c-primary));
+      color: white;
+      box-shadow: var(--shadow-cta);
+    }
+    .btn-cta:hover { filter: brightness(0.95); }
+
+    .ring-brand:focus { outline: none; box-shadow: 0 0 0 4px rgba(108,211,251,0.35); }
+
     /* Pequenos ajustes */
     .btn-disabled { opacity: .5; cursor: not-allowed; }
   </style>
@@ -58,27 +122,27 @@
           range: "baixo",
           title: "Nível de estresse percebido baixo",
           description: "Seus resultados sugerem que você tem conseguido lidar bem com as demandas do dia a dia. Continue cultivando hábitos saudáveis e momentos de autocuidado.",
-          gradient: "from-emerald-500 to-teal-500",
-          bgColor: "bg-emerald-50",
-          textColor: "text-emerald-700"
+          gradient: "gradient-secondary",
+          bgColor: "bg-secondary-soft",
+          textColor: "text-primary"
         };
       } else if (score <= 26) {
         return {
           range: "moderado",
           title: "Nível de estresse percebido moderado",
           description: "Seus resultados indicam uma tendência a estresse percebido em nível moderado. Isso é comum e pode ser um bom momento para incorporar práticas de bem-estar à sua rotina.",
-          gradient: "from-amber-500 to-orange-500",
-          bgColor: "bg-amber-50",
-          textColor: "text-amber-700"
+          gradient: "gradient-cta",
+          bgColor: "bg-cta-soft",
+          textColor: "text-cta"
         };
       }
       return {
         range: "alto",
         title: "Tendência a estresse percebido mais elevado",
         description: "Seus resultados sugerem uma tendência a níveis mais elevados de estresse percebido. Recomendamos buscar estratégias de cuidado e, se necessário, apoio profissional.",
-        gradient: "from-rose-500 to-pink-500",
-        bgColor: "bg-rose-50",
-        textColor: "text-rose-700"
+        gradient: "gradient-primary",
+        bgColor: "bg-primary-soft",
+        textColor: "text-primary"
       };
     }
 
@@ -95,7 +159,7 @@
   ============================================ -->
   <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-stone-100">
     <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-center gap-2">
-      <span class="text-teal-600">🍃</span>
+      <span class="text-primary">🍃</span>
       <span class="text-sm font-medium text-stone-700">Spa Médico Adventista Cevisa</span>
     </div>
   </header>
@@ -257,11 +321,11 @@
       const el = document.getElementById("stage-intro");
       el.innerHTML = `
         <div class="text-center mb-8">
-          <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-teal-200">
+          <div class="w-20 h-20 mx-auto mb-6 rounded-full gradient-primary flex items-center justify-center shadow-brand">
             <span class="text-white text-3xl">✨</span>
           </div>
           <h1 class="text-3xl md:text-4xl font-light text-stone-800 mb-3">
-            Como está seu <span class="font-medium text-teal-600">bem-estar</span>?
+            Como está seu <span class="font-medium text-primary">bem-estar</span>?
           </h1>
           <p class="text-stone-500 text-lg">Escala de Estresse Percebido (PSS-10)</p>
         </div>
@@ -282,7 +346,7 @@
           </p>
         </div>
 
-        <button id="btn-start" class="w-full h-14 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white text-lg font-medium rounded-xl shadow-lg shadow-teal-200 transition-all duration-300 flex items-center justify-center">
+        <button id="btn-start" class="w-full h-14 btn-brand text-lg font-medium rounded-xl transition-all duration-300 flex items-center justify-center">
           Iniciar avaliação
           <span class="ml-2">›</span>
         </button>
@@ -302,12 +366,12 @@
         return `
           <button
             class="w-full p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between
-              ${active ? "border-teal-500 bg-teal-50 shadow-sm" : "border-stone-100 bg-white hover:border-stone-200 hover:bg-stone-50"}"
+              ${active ? "border-primary bg-primary-soft shadow-sm" : "border-stone-100 bg-white hover:border-stone-200 hover:bg-stone-50"}"
             data-value="${opt.value}"
           >
-            <span class="${active ? "text-teal-700 font-medium" : "text-stone-600"}">${opt.label}</span>
+            <span class="${active ? "text-primary font-medium" : "text-stone-600"}">${opt.label}</span>
             <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
-              ${active ? "bg-teal-500 text-white" : "bg-stone-100 text-stone-400"}"
+              ${active ? "bg-primary text-white" : "bg-stone-100 text-stone-400"}"
             >${opt.value}</span>
           </button>
         `;
@@ -319,16 +383,16 @@
         <div class="mb-8">
           <div class="flex justify-between items-center mb-2">
             <span class="text-sm text-stone-500">Pergunta ${state.currentQuestion + 1} de ${PSS_ITEMS.length}</span>
-            <span class="text-sm font-medium text-teal-600">${Math.round(p)}%</span>
+            <span class="text-sm font-medium text-primary">${Math.round(p)}%</span>
           </div>
           <div class="h-2 w-full bg-stone-100 rounded-full overflow-hidden">
-            <div class="h-2 bg-teal-500 rounded-full" style="width:${p}%"></div>
+            <div class="h-2 bg-primary rounded-full" style="width:${p}%"></div>
           </div>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 mb-6">
           <p class="text-lg text-stone-700 leading-relaxed">${q.text}</p>
-          ${q.reverse ? `<span class="inline-block mt-3 text-xs text-teal-600 bg-teal-50 px-2 py-1 rounded-full">✨ Pergunta sobre recursos positivos</span>` : ""}
+          ${q.reverse ? `<span class="inline-block mt-3 text-xs text-secondary bg-secondary-soft px-2 py-1 rounded-full">✨ Pergunta sobre recursos positivos</span>` : ""}
         </div>
 
         <div class="space-y-3 mb-8" id="scale-wrap">
@@ -343,7 +407,7 @@
           ` : ""}
           <button
             id="btn-next"
-            class="flex-1 h-12 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white rounded-xl flex items-center justify-center ${disableNext ? "btn-disabled" : ""}"
+            class="flex-1 h-12 btn-brand rounded-xl flex items-center justify-center ${disableNext ? "btn-disabled" : ""}"
             ${disableNext ? "disabled" : ""}
           >
             ${state.currentQuestion === PSS_ITEMS.length - 1 ? "Ver resultado" : "Próxima"} <span class="ml-2">›</span>
@@ -369,11 +433,11 @@
 
       el.innerHTML = `
         <div class="text-center mb-8">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center shadow-lg shadow-amber-200">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full gradient-cta flex items-center justify-center shadow-cta">
             <span class="text-white text-2xl">✅</span>
           </div>
           <h2 class="text-2xl font-light text-stone-800 mb-2">
-            Seu resultado está <span class="font-medium text-teal-600">pronto!</span>
+            Seu resultado está <span class="font-medium text-primary">pronto!</span>
           </h2>
           <p class="text-stone-500">Preencha seus dados para visualizar</p>
         </div>
@@ -384,7 +448,7 @@
               <label class="block text-sm font-medium text-stone-700 mb-2">Seu nome</label>
               <input id="lead-nome" type="text" placeholder="Como podemos te chamar?"
                 value="${escapeHtml(nome)}"
-                class="w-full h-12 rounded-xl border ${eNome ? "border-red-300" : "border-stone-200"} px-3 outline-none focus:ring-2 focus:ring-teal-200"
+                class="w-full h-12 rounded-xl border ${eNome ? "border-red-300" : "border-stone-200"} px-3 outline-none ring-brand"
               />
               ${eNome ? `<p class="text-xs text-red-500 mt-1">${eNome}</p>` : ""}
             </div>
@@ -394,14 +458,14 @@
               <input id="lead-wpp" type="tel" placeholder="(00) 00000-0000"
                 value="${escapeHtml(whatsapp)}"
                 maxlength="16"
-                class="w-full h-12 rounded-xl border ${eWpp ? "border-red-300" : "border-stone-200"} px-3 outline-none focus:ring-2 focus:ring-teal-200"
+                class="w-full h-12 rounded-xl border ${eWpp ? "border-red-300" : "border-stone-200"} px-3 outline-none ring-brand"
               />
               ${eWpp ? `<p class="text-xs text-red-500 mt-1">${eWpp}</p>` : ""}
             </div>
 
             <div class="pt-2">
               <div class="flex items-start gap-3">
-                <input id="lead-consent" type="checkbox" ${consent ? "checked" : ""} class="mt-1 h-4 w-4 accent-teal-600" />
+                <input id="lead-consent" type="checkbox" ${consent ? "checked" : ""} class="mt-1 h-4 w-4 accent-brand" />
                 <label for="lead-consent" class="text-sm text-stone-600 cursor-pointer">
                   Concordo em receber contato do Spa Médico Adventista Cevisa com informações sobre bem-estar e nossos programas.
                 </label>
@@ -411,7 +475,7 @@
           </div>
 
           <button id="btn-submit"
-            class="w-full h-14 mt-6 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white text-lg font-medium rounded-xl shadow-lg shadow-teal-200 flex items-center justify-center ${state.isSubmitting ? "btn-disabled" : ""}"
+            class="w-full h-14 mt-6 btn-brand text-lg font-medium rounded-xl flex items-center justify-center ${state.isSubmitting ? "btn-disabled" : ""}"
             ${state.isSubmitting ? "disabled" : ""}
           >
             ${state.isSubmitting ? "Processando..." : "Ver meu resultado"}
@@ -495,17 +559,17 @@
           </div>
         </div>
 
-        <div class="bg-gradient-to-br from-teal-500 to-emerald-500 rounded-2xl p-6 text-white text-center">
+        <div class="gradient-primary rounded-2xl p-6 text-white text-center shadow-brand">
           <div class="text-4xl mb-3 opacity-90">🍃</div>
           <h3 class="text-xl font-medium mb-2">Programa Integrativo de Bem-Estar</h3>
-          <p class="text-teal-100 text-sm mb-4">
+          <p class="text-on-primary-muted text-sm mb-4">
             Conheça nosso programa completo de saúde integrativa no Spa Médico Adventista Cevisa.
           </p>
           <a
             href="https://wa.me/5500000000000?text=${whatsappMsg}"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center w-full h-14 bg-white text-teal-600 font-medium rounded-xl hover:bg-teal-50 transition-colors"
+            class="inline-flex items-center justify-center w-full h-14 bg-white text-primary font-medium rounded-xl hover:bg-stone-50 transition-colors"
           >
             <span class="mr-2">📞</span>
             Falar pelo WhatsApp
