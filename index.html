@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PSS-10 – Spa Médico Adventista Cevisa</title>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --c-primary: #1C549C;
+      --c-secondary: #6CD3FB;
+      --c-accent: #28F5CC;
+      --c-cta: #FF9500;
+
+      /* Tons claros (para backgrounds suaves) */
+      --c-primary-50: rgba(28,84,156,0.08);
+      --c-secondary-50: rgba(108,211,251,0.16);
+      --c-accent-50: rgba(40,245,204,0.16);
+      --c-cta-50: rgba(255,149,0,0.14);
+
+      /* Sombras */
+      --shadow-primary: 0 10px 25px rgba(28,84,156,0.18);
+      --shadow-cta: 0 10px 25px rgba(255,149,0,0.18);
+    }
+
+    .bg-primary { background: var(--c-primary); }
+    .bg-secondary { background: var(--c-secondary); }
+    .bg-accent { background: var(--c-accent); }
+    .bg-cta { background: var(--c-cta); }
+
+    .text-primary { color: var(--c-primary); }
+    .text-secondary { color: #075985; }
+    .text-accent { color: #0f766e; }
+    .text-cta { color: var(--c-cta); }
+
+    .bg-primary-soft { background: var(--c-primary-50); }
+    .bg-secondary-soft { background: var(--c-secondary-50); }
+    .bg-accent-soft { background: var(--c-accent-50); }
+    .bg-cta-soft { background: var(--c-cta-50); }
+
+    .border-primary { border-color: rgba(28,84,156,0.28); }
+    .border-secondary { border-color: rgba(108,211,251,0.35); }
+    .border-accent { border-color: rgba(40,245,204,0.35); }
+    .border-cta { border-color: rgba(255,149,0,0.35); }
+
+    .gradient-primary { background: linear-gradient(135deg, var(--c-primary), var(--c-accent)); }
+    .gradient-secondary { background: linear-gradient(135deg, var(--c-secondary), var(--c-accent)); }
+    .gradient-cta { background: linear-gradient(135deg, var(--c-cta), var(--c-primary)); }
+
+    .shadow-brand { box-shadow: var(--shadow-primary); }
+    .shadow-cta { box-shadow: var(--shadow-cta); }
+
+    .text-on-primary-muted { color: rgba(255, 255, 255, 0.8); }
+
+    .accent-brand { accent-color: var(--c-primary); }
+
+    .btn-brand {
+      background: linear-gradient(90deg, var(--c-primary), var(--c-accent));
+      color: white;
+      box-shadow: var(--shadow-primary);
+    }
+    .btn-brand:hover { filter: brightness(0.95); }
+
+    .btn-cta {
+      background: linear-gradient(90deg, var(--c-cta), var(--c-primary));
+      color: white;
+      box-shadow: var(--shadow-cta);
+    }
+    .btn-cta:hover { filter: brightness(0.95); }
+
+    .ring-brand:focus { outline: none; box-shadow: 0 0 0 4px rgba(108,211,251,0.35); }
+
+    /* Branding */
+    .spa-brand-top {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding-top: 20px;
+      padding-bottom: 28px;
+    }
+
+    .spa-brand-logo {
+      max-width: 200px;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .spa-footer-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .spa-footer-logo-img {
+      max-width: 160px;
+      width: 100%;
+      height: auto;
+      opacity: 0.75;
+    }
+
+    .spa-logo-overlay.footer.is-on-dark {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(4px);
+    }
+
+    @media (max-width: 640px) {
+      .spa-brand-logo {
+        max-width: 160px;
+      }
+      .spa-footer-logo-img {
+        max-width: 140px;
+      }
+    }
+
+    /* Pequenos ajustes */
+    .btn-disabled { opacity: .5; cursor: not-allowed; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-b from-stone-50 via-white to-stone-50">
+  <!-- ============================================
+       CONFIGURAÇÃO
+  ============================================ -->
+  <script>
+    // Endpoint para leads (troque)
+    const LEAD_ENDPOINT = "https://seu-endpoint.com/leads";
+    const SEND_INDIVIDUAL_RESPONSES = false; // true se quiser enviar respostas individuais (cuidado LGPD)
+
+    // Itens PSS-10 (4,5,7,8 reversos -> índices 3,4,6,7)
+    const PSS_ITEMS = [
+      { id: 1, text: "No último mês, com que frequência você ficou irritado(a) por causa de algo que aconteceu inesperadamente?", reverse: false },
+      { id: 2, text: "No último mês, com que frequência você sentiu que não conseguia controlar coisas importantes da sua vida?", reverse: false },
+      { id: 3, text: "No último mês, com que frequência você se sentiu nervoso(a) e estressado(a)?", reverse: false },
+      { id: 4, text: "No último mês, com que frequência você se sentiu confiante em sua capacidade de lidar com seus problemas pessoais?", reverse: true },
+      { id: 5, text: "No último mês, com que frequência você sentiu que as coisas estavam indo do seu jeito?", reverse: true },
+      { id: 6, text: "No último mês, com que frequência você sentiu que não conseguia dar conta de todas as coisas que tinha para fazer?", reverse: false },
+      { id: 7, text: "No último mês, com que frequência você conseguiu controlar irritações na sua vida?", reverse: true },
+      { id: 8, text: "No último mês, com que frequência você sentiu que estava no controle das coisas?", reverse: true },
+      { id: 9, text: "No último mês, com que frequência você ficou com raiva por causa de coisas que estavam fora do seu controle?", reverse: false },
+      { id: 10, text: "No último mês, com que frequência você sentiu que as dificuldades estavam se acumulando tanto que não conseguia superá-las?", reverse: false }
+    ];
+
+    const SCALE_OPTIONS = [
+      { value: 0, label: "Nunca" },
+      { value: 1, label: "Quase nunca" },
+      { value: 2, label: "Às vezes" },
+      { value: 3, label: "Quase sempre" },
+      { value: 4, label: "Sempre" }
+    ];
+
+    const RECOMMENDATIONS = [
+      { icon: "🌙", title: "Higiene do Sono", desc: "Mantenha horários regulares e um ambiente propício ao descanso" },
+      { icon: "⏱️", title: "Pausas Conscientes", desc: "Faça pequenas pausas ao longo do dia para se reconectar" },
+      { icon: "🌬️", title: "Respiração", desc: "Pratique respirações profundas por alguns minutos diariamente" },
+      { icon: "❤️", title: "Rotina Equilibrada", desc: "Inclua momentos de lazer e conexão em sua agenda" }
+    ];
+
+    function getScoreInterpretation(score) {
+      if (score <= 13) {
+        return {
+          range: "baixo",
+          title: "Nível de estresse percebido baixo",
+          description: "Seus resultados sugerem que você tem conseguido lidar bem com as demandas do dia a dia. Continue cultivando hábitos saudáveis e momentos de autocuidado.",
+          gradient: "gradient-secondary",
+          bgColor: "bg-secondary-soft",
+          textColor: "text-secondary",
+          scoreTextColor: "text-blue"
+        };
+      } else if (score <= 26) {
+        return {
+          range: "moderado",
+          title: "Nível de estresse percebido moderado",
+          description: "Seus resultados indicam uma tendência a estresse percebido em nível moderado. Isso é comum e pode ser um bom momento para incorporar práticas de bem-estar à sua rotina.",
+          gradient: "gradient-cta",
+          bgColor: "bg-cta-soft",
+          textColor: "text-secondary",
+          scoreTextColor: "text-blue"
+        };
+      } 
+      return {
+        range: "alto",
+        title: "Tendência a estresse percebido mais elevado",
+        description: "Seus resultados sugerem uma tendência a níveis mais elevados de estresse percebido. Recomendamos buscar estratégias de cuidado e, se necessário, apoio profissional.",
+        gradient: "gradient-primary",
+        bgColor: "bg-primary-soft",
+        textColor: "text-secondary",
+        scoreTextColor: "text-blue"
+      };
+    }
+
+    function formatWhatsApp(value) {
+      const numbers = (value || "").replace(/\D/g, "");
+      if (numbers.length <= 2) return numbers;
+      if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+    }
+  </script>
+
+  <div class="spa-brand-top">
+    <img
+      src="https://adventisthealth.com.br/wp-content/uploads/2025/03/logo-spa-adv.svg"
+      alt="Spa Médico Adventista Cevisa"
+      class="spa-brand-logo"
+      loading="eager"
+    />
+  </div>
+
+  <main class="pb-12 px-4">
+    <div class="max-w-xl mx-auto">
+      <!-- Stages -->
+      <section id="stage-intro" class="pt-8"></section>
+      <section id="stage-quiz" class="pt-6 hidden"></section>
+      <section id="stage-gate" class="pt-8 hidden"></section>
+      <section id="stage-result" class="pt-8 hidden"></section>
+    </div>
+  </main>
+
+  <script>
+    // ============================================
+    // STATE
+    // ============================================
+    const state = {
+      stage: "intro", // intro | quiz | gate | result
+      currentQuestion: 0,
+      answers: {}, // { index: value }
+      leadData: { nome: "", whatsapp: "", consent: false },
+      score: null,
+      errors: {},
+      isSubmitting: false
+    };
+
+    // ============================================
+    // HELPERS
+    // ============================================
+    function scrollTopSmooth() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function setStage(stage) {
+      state.stage = stage;
+      document.getElementById("stage-intro").classList.toggle("hidden", stage !== "intro");
+      document.getElementById("stage-quiz").classList.toggle("hidden", stage !== "quiz");
+      document.getElementById("stage-gate").classList.toggle("hidden", stage !== "gate");
+      document.getElementById("stage-result").classList.toggle("hidden", stage !== "result");
+      render();
+      scrollTopSmooth();
+    }
+
+    function calculateScore() {
+      let total = 0;
+      PSS_ITEMS.forEach((item, idx) => {
+        const ans = (state.answers[idx] ?? 0);
+        total += item.reverse ? (4 - ans) : ans;
+      });
+      return total;
+    }
+
+    function progressPercent() {
+      if (state.stage !== "quiz") return 0;
+      return ((state.currentQuestion + 1) / PSS_ITEMS.length) * 100;
+    }
+
+    function firstName(nome) {
+      const n = (nome || "").trim();
+      if (!n) return "";
+      return n.split(/\s+/)[0];
+    }
+
+    function validateLead() {
+      const errors = {};
+      if (!state.leadData.nome.trim() || state.leadData.nome.trim().length < 2) {
+        errors.nome = "Por favor, informe seu nome";
+      }
+      const digits = state.leadData.whatsapp.replace(/\D/g, "");
+      if (digits.length < 10 || digits.length > 11) {
+        errors.whatsapp = "Por favor, informe um WhatsApp válido";
+      }
+      if (!state.leadData.consent) {
+        errors.consent = "É necessário concordar para continuar";
+      }
+      state.errors = errors;
+      return Object.keys(errors).length === 0;
+    }
+
+    async function submitLead() {
+      if (!validateLead()) {
+        render();
+        return;
+      }
+      state.isSubmitting = true;
+      render();
+
+      const interpretation = getScoreInterpretation(state.score);
+
+      const payload = {
+        nome: state.leadData.nome.trim(),
+        whatsapp: state.leadData.whatsapp.replace(/\D/g, ""),
+        score: state.score,
+        faixa: interpretation.range,
+        consentimento: true,
+        data: new Date().toISOString()
+      };
+
+      if (SEND_INDIVIDUAL_RESPONSES) payload.respostas = state.answers;
+
+      try {
+        if (LEAD_ENDPOINT && LEAD_ENDPOINT !== "https://seu-endpoint.com/leads") {
+          await fetch(LEAD_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          console.log("Lead capturado (endpoint não configurado):", payload);
+        }
+      } catch (e) {
+        console.log("Falha ao enviar lead, salvando log:", payload, e);
+      } finally {
+        state.isSubmitting = false;
+        setStage("result");
+      }
+    }
+
+    // ============================================
+    // ACTIONS
+    // ============================================
+    function startQuiz() {
+      state.currentQuestion = 0;
+      setStage("quiz");
+    }
+
+    function answerQuestion(value) {
+      state.answers[state.currentQuestion] = value;
+      render();
+    }
+
+    function nextQuestion() {
+      if (state.answers[state.currentQuestion] === undefined) return;
+
+      if (state.currentQuestion < PSS_ITEMS.length - 1) {
+        state.currentQuestion += 1;
+        render();
+        scrollTopSmooth();
+      } else {
+        state.score = calculateScore();
+        setStage("gate");
+      }
+    }
+
+    function prevQuestion() {
+      if (state.currentQuestion > 0) {
+        state.currentQuestion -= 1;
+        render();
+        scrollTopSmooth();
+      }
+    }
+
+    // ============================================
+    // RENDERERS
+    // ============================================
+    function renderIntro() {
+      const el = document.getElementById("stage-intro");
+      el.innerHTML = `
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 mx-auto mb-6 rounded-full gradient-primary flex items-center justify-center shadow-brand">
+            <span class="text-white text-3xl">✨</span>
+          </div>
+          <h1 class="text-3xl md:text-4xl font-light text-stone-800 mb-3">
+            Como está seu <span class="font-medium text-primary">bem-estar</span>?
+          </h1>
+          <p class="text-stone-500 text-lg">Escala de Estresse Percebido (PSS-10)</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 mb-6">
+          <p class="text-stone-600 leading-relaxed mb-4">
+            Este questionário educativo ajuda você a refletir sobre como tem lidado com as situações do dia a dia no <strong>último mês</strong>.
+          </p>
+          <p class="text-stone-600 leading-relaxed">
+            São apenas <strong>10 perguntas rápidas</strong>. Ao final, você receberá um resultado com orientações personalizadas de bem-estar.
+          </p>
+        </div>
+
+        <div class="bg-stone-50 rounded-xl p-4 mb-8 flex items-start gap-3">
+          <span class="text-stone-400 mt-0.5">🛡️</span>
+          <p class="text-xs text-stone-500">
+            Este questionário tem caráter educativo e de triagem, não constituindo diagnóstico médico ou psicológico. Para avaliação profissional, consulte um especialista.
+          </p>
+        </div>
+
+        <button id="btn-start" class="w-full h-14 btn-brand text-lg font-medium rounded-xl transition-all duration-300 flex items-center justify-center">
+          Iniciar avaliação
+          <span class="ml-2">›</span>
+        </button>
+      `;
+
+      document.getElementById("btn-start").onclick = startQuiz;
+    }
+
+    function renderQuiz() {
+      const el = document.getElementById("stage-quiz");
+      const q = PSS_ITEMS[state.currentQuestion];
+      const p = progressPercent();
+      const chosen = state.answers[state.currentQuestion];
+
+      const scaleButtons = SCALE_OPTIONS.map((opt) => {
+        const active = chosen === opt.value;
+        return `
+          <button
+            class="w-full p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between
+              ${active ? "border-primary bg-primary-soft shadow-sm" : "border-stone-100 bg-white hover:border-stone-200 hover:bg-stone-50"}"
+            data-value="${opt.value}"
+          >
+            <span class="${active ? "text-primary font-medium" : "text-stone-600"}">${opt.label}</span>
+            <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
+              ${active ? "bg-primary text-white" : "bg-stone-100 text-stone-400"}"
+            >${opt.value}</span>
+          </button>
+        `;
+      }).join("");
+
+      const disableNext = (chosen === undefined);
+
+      el.innerHTML = `
+        <div class="mb-8">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-stone-500">Pergunta ${state.currentQuestion + 1} de ${PSS_ITEMS.length}</span>
+            <span class="text-sm font-medium text-primary">${Math.round(p)}%</span>
+          </div>
+          <div class="h-2 w-full bg-stone-100 rounded-full overflow-hidden">
+            <div class="h-2 bg-primary rounded-full" style="width:${p}%"></div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 mb-6">
+          <p class="text-lg text-stone-700 leading-relaxed">${q.text}</p>
+          ${q.reverse ? `<span class="inline-block mt-3 text-xs text-secondary bg-secondary-soft px-2 py-1 rounded-full">✨ Pergunta sobre recursos positivos</span>` : ""}
+        </div>
+
+        <div class="space-y-3 mb-8" id="scale-wrap">
+          ${scaleButtons}
+        </div>
+
+        <div class="flex gap-3">
+          ${state.currentQuestion > 0 ? `
+            <button id="btn-prev" class="h-12 px-6 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 flex items-center justify-center">
+              ‹ <span class="ml-1">Voltar</span>
+            </button>
+          ` : ""}
+          <button
+            id="btn-next"
+            class="flex-1 h-12 btn-brand rounded-xl flex items-center justify-center ${disableNext ? "btn-disabled" : ""}"
+            ${disableNext ? "disabled" : ""}
+          >
+            ${state.currentQuestion === PSS_ITEMS.length - 1 ? "Ver resultado" : "Próxima"} <span class="ml-2">›</span>
+          </button>
+        </div>
+      `;
+
+      // bind scale
+      document.querySelectorAll("#scale-wrap button[data-value]").forEach((btn) => {
+        btn.onclick = () => answerQuestion(parseInt(btn.dataset.value, 10));
+      });
+
+      // bind nav
+      const prevBtn = document.getElementById("btn-prev");
+      if (prevBtn) prevBtn.onclick = prevQuestion;
+      document.getElementById("btn-next").onclick = nextQuestion;
+    }
+
+    function renderGate() {
+      const el = document.getElementById("stage-gate");
+      const { nome, whatsapp, consent } = state.leadData;
+      const { nome: eNome, whatsapp: eWpp, consent: eCons } = state.errors || {};
+
+      el.innerHTML = `
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full gradient-cta flex items-center justify-center shadow-cta">
+            <span class="text-white text-2xl">✅</span>
+          </div>
+          <h2 class="text-2xl font-light text-stone-800 mb-2">
+            Seu resultado está <span class="font-medium text-primary">pronto!</span>
+          </h2>
+          <p class="text-stone-500">Preencha seus dados para visualizar</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-stone-700 mb-2">Seu nome</label>
+              <input id="lead-nome" type="text" placeholder="Como podemos te chamar?"
+                value="${escapeHtml(nome)}"
+                class="w-full h-12 rounded-xl border ${eNome ? "border-red-300" : "border-stone-200"} px-3 outline-none ring-brand"
+              />
+              ${eNome ? `<p class="text-xs text-red-500 mt-1">${eNome}</p>` : ""}
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-stone-700 mb-2">WhatsApp</label>
+              <input id="lead-wpp" type="tel" placeholder="(00) 00000-0000"
+                value="${escapeHtml(whatsapp)}"
+                maxlength="16"
+                class="w-full h-12 rounded-xl border ${eWpp ? "border-red-300" : "border-stone-200"} px-3 outline-none ring-brand"
+              />
+              ${eWpp ? `<p class="text-xs text-red-500 mt-1">${eWpp}</p>` : ""}
+            </div>
+
+            <div class="pt-2">
+              <div class="flex items-start gap-3">
+                <input id="lead-consent" type="checkbox" ${consent ? "checked" : ""} class="mt-1 h-4 w-4 accent-brand" />
+                <label for="lead-consent" class="text-sm text-stone-600 cursor-pointer">
+                  Concordo em receber contato do Spa Médico Adventista Cevisa com informações sobre bem-estar e nossos programas.
+                </label>
+              </div>
+              ${eCons ? `<p class="text-xs text-red-500 mt-2">${eCons}</p>` : ""}
+            </div>
+          </div>
+
+          <button id="btn-submit"
+            class="w-full h-14 mt-6 btn-brand text-lg font-medium rounded-xl flex items-center justify-center ${state.isSubmitting ? "btn-disabled" : ""}"
+            ${state.isSubmitting ? "disabled" : ""}
+          >
+            ${state.isSubmitting ? "Processando..." : "Ver meu resultado"}
+          </button>
+        </div>
+
+        <p class="text-xs text-center text-stone-400 mt-4 px-4">
+          Seus dados são protegidos conforme a LGPD e utilizados apenas para contato pelo Spa Médico Cevisa.
+        </p>
+      `;
+
+      // bind inputs
+      document.getElementById("lead-nome").oninput = (e) => {
+        state.leadData.nome = e.target.value;
+      };
+
+      document.getElementById("lead-wpp").oninput = (e) => {
+        const formatted = formatWhatsApp(e.target.value);
+        state.leadData.whatsapp = formatted;
+        e.target.value = formatted;
+      };
+
+      document.getElementById("lead-consent").onchange = (e) => {
+        state.leadData.consent = !!e.target.checked;
+      };
+
+      document.getElementById("btn-submit").onclick = submitLead;
+    }
+
+    function renderResult() {
+      const el = document.getElementById("stage-result");
+      const interpretation = getScoreInterpretation(state.score);
+      const year = new Date().getFullYear();
+      const nome = state.leadData.nome;
+      const score = state.score;
+
+      const recCards = RECOMMENDATIONS.map((r) => `
+        <div class="bg-stone-50 rounded-xl p-4">
+          <div class="text-2xl mb-2">${r.icon}</div>
+          <h4 class="text-sm font-medium text-stone-700 mb-1">${r.title}</h4>
+          <p class="text-xs text-stone-500">${r.desc}</p>
+        </div>
+      `).join("");
+
+      const whatsappMsg = encodeURIComponent(
+        `Olá! Fiz a avaliação de estresse percebido (PSS-10) e meu score foi ${score}. Gostaria de saber mais sobre o Programa Integrativo.`
+      );
+
+      el.innerHTML = `
+        <div class="text-center mb-6">
+          <p class="text-stone-500 mb-2">Olá, ${escapeHtml(firstName(nome))}!</p>
+          <h2 class="text-2xl font-light text-stone-800">Seu resultado</h2>
+        </div>
+
+        <div class="rounded-2xl p-6 mb-6 ${interpretation.bgColor} border border-stone-100">
+          <div class="text-center mb-4">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full
+            bg-gradient-to-br ${interpretation.gradient}
+            ${interpretation.scoreTextColor}
+            text-3xl font-light mb-3">
+
+              ${score}
+            </div>
+            <p class="text-xs text-stone-500 mb-2">de 40 pontos</p>
+            <h3 class="text-lg font-medium ${interpretation.textColor}">
+              ${interpretation.title}
+            </h3>
+          </div>
+          <p class="text-stone-600 text-center text-sm leading-relaxed">
+            ${interpretation.description}
+          </p>
+        </div>
+
+        <div class="bg-stone-50 rounded-xl p-4 mb-6 flex items-start gap-3">
+          <span class="text-stone-400 mt-0.5">🛡️</span>
+          <p class="text-xs text-stone-500">
+            <strong>Importante:</strong> Este resultado tem caráter educativo e não constitui diagnóstico. Para uma avaliação completa, consulte um profissional de saúde.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-100 mb-6">
+          <h3 class="text-lg font-medium text-stone-800 mb-4">Recomendações de bem-estar</h3>
+          <div class="grid grid-cols-2 gap-3">
+            ${recCards}
+          </div>
+        </div>
+
+        <div class="gradient-primary rounded-2xl p-6 text-white text-center shadow-brand">
+          <div class="text-4xl mb-3 opacity-90">🍃</div>
+          <h3 class="text-xl font-medium mb-2">Programa Integrativo de Bem-Estar</h3>
+          <p class="text-on-primary-muted text-sm mb-4">
+            Conheça nosso programa completo de saúde integrativa no Spa Médico Adventista Cevisa.
+          </p>
+          <a
+            href="https://wa.me/5500000000000?text=${whatsappMsg}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center w-full h-14 bg-white text-primary font-medium rounded-xl hover:bg-stone-50 transition-colors"
+          >
+            <span class="mr-2">📞</span>
+            Falar pelo WhatsApp
+          </a>
+        </div>
+
+        <div class="spa-footer-logo mt-6">
+          <div class="spa-logo-overlay footer">
+            <img
+              src="https://adventisthealth.com.br/wp-content/uploads/2025/03/logo-spa-adv.svg"
+              alt="Spa Médico Adventista Cevisa"
+              class="spa-footer-logo-img"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <p class="text-xs text-center text-stone-400">
+          © ${year} Spa Médico Adventista Cevisa. Todos os direitos reservados.
+        </p>
+      `;
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function render() {
+      if (state.stage === "intro") renderIntro();
+      if (state.stage === "quiz") renderQuiz();
+      if (state.stage === "gate") renderGate();
+      if (state.stage === "result") renderResult();
+    }
+
+    // ============================================
+    // BOOT
+    // ============================================
+    setStage("intro");
+  </script>
+</body>
+</html>
